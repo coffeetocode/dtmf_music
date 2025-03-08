@@ -65,7 +65,21 @@ The script generates WAV files named 'dtmf_<number>.wav' in the current director
 Features
 --------
 - Standard DTMF frequencies for telephone keypad tones
-- Configurable tone durations (global or per-digit)
+- Configurable tone durations (global or per-character)
+- Support for spaces, dashes, and underscores as silence
 - Brief silence between tones for clarity
 - Automatic caching (reuses existing WAV files)
 - Built-in audio playback on macOS
+
+Special Characters
+----------------
+The following characters are interpreted as silence periods:
+- Space character " "
+- Dash "-"
+- Underscore "_"
+
+These characters count as positions when using --durations. For example:
+```
+python gen_dtmf.py "123-456" --durations 0.1 0.2 0.3 0.5 0.1 0.2 0.3
+```
+In this case, the dash will be a 0.5 second silence.

@@ -5,12 +5,15 @@ import os
 import subprocess
 import sys
 
-# Define DTMF frequencies for each digit
+# Define DTMF frequencies for each digit and special characters
 DTMF_FREQUENCIES = {
     '1': (697, 1209), '2': (697, 1336), '3': (697, 1477),
     '4': (770, 1209), '5': (770, 1336), '6': (770, 1477),
     '7': (852, 1209), '8': (852, 1336), '9': (852, 1477),
-    '0': (941, 1336)
+    '0': (941, 1336),
+    ' ': None,  # Space for silence
+    '-': None,  # Dash for silence
+    '_': None   # Underscore for silence
 }
 
 # Generate DTMF tone for a digit
@@ -21,22 +24,29 @@ def generate_tone(frequencies, duration=0.2, sample_rate=8000):
     # Scale to 16-bit audio range with 50% amplitude for clearer tones
     return ((wave * 32767) * 0.5).astype(np.int16)
 
+# Generate silence of specified duration
+def generate_silence(duration, sample_rate=8000):
+    return np.zeros(int(sample_rate * duration), dtype=np.int16)
+
 # Generate DTMF sequence for a phone number
 def generate_dtmf_tones(phone_number, tone_durations=None, silence_duration=0.05, sample_rate=8000):
     dtmf_sequence = []
-    silence = np.zeros(int(sample_rate * silence_duration), dtype=np.int16)
+    inter_tone_silence = generate_silence(silence_duration, sample_rate)
 
     # If tone_durations is not provided or is a single value, create a list of equal durations
     if tone_durations is None or isinstance(tone_durations, (int, float)):
         default_duration = 0.2 if tone_durations is None else float(tone_durations)
         tone_durations = [default_duration] * len(phone_number)
     elif len(tone_durations) != len(phone_number):
-        raise ValueError("Number of tone durations must match number of digits")
+        raise ValueError("Number of tone durations must match number of characters (including spaces/dashes)")
 
-    for digit, duration in zip(phone_number, tone_durations):
-        if digit in DTMF_FREQUENCIES:
-            dtmf_sequence.append(generate_tone(DTMF_FREQUENCIES[digit], duration=duration, sample_rate=sample_rate))
-            dtmf_sequence.append(silence)  # Add short silence between tones
+    for char, duration in zip(phone_number, tone_durations):
+        if char in DTMF_FREQUENCIES:
+            if DTMF_FREQUENCIES[char] is None:  # Special character (space, dash, underscore)
+                dtmf_sequence.append(generate_silence(duration, sample_rate))
+            else:  # Regular digit
+                dtmf_sequence.append(generate_tone(DTMF_FREQUENCIES[char], duration=duration, sample_rate=sample_rate))
+                dtmf_sequence.append(inter_tone_silence)  # Add short silence between tones
 
     return np.concatenate(dtmf_sequence)
 
@@ -63,9 +73,9 @@ def main():
                       help='Do not play the audio after generation')
     args = parser.parse_args()
 
-    # Clean the phone number to keep only digits
-    phone_number = ''.join(filter(str.isdigit, args.phone_number))
-    if not phone_number:
+    # Clean the phone number to keep only valid characters
+    phone_number = ''.join(c for c in args.phone_number if c in DTMF_FREQUENCIES)
+    if not phone_number or not any(c.isdigit() for c in phone_number):
         print("Error: No valid digits in the provided phone number")
         return
 
