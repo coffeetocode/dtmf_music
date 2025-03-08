@@ -64,7 +64,7 @@ The script generates WAV files named 'dtmf_<number>.wav' in the current director
 
 Features
 --------
-- Standard DTMF frequencies for telephone keypad tones
+- Standard DTMF frequencies for telephone keypad tones (0-9, *, #)
 - Configurable tone durations (global or per-character)
 - Support for spaces, dashes, and underscores as silence
 - Brief silence between tones for clarity
@@ -73,10 +73,15 @@ Features
 
 Special Characters
 ----------------
-The following characters are interpreted as silence periods:
+Silence characters:
 - Space character " "
 - Dash "-"
 - Underscore "_"
+
+DTMF characters:
+- Digits 0-9
+- Star "*"
+- Pound "#"
 
 These characters count as positions when using --durations. For example:
 ```
