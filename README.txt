@@ -31,8 +31,13 @@ python gen_dtmf.py <phone_number>
 ```
 
 Options:
-- --duration: Set the same duration for all tones (in seconds, default: 0.2)
-- --durations: Set individual durations for each digit (in seconds)
+- --duration: Set the same duration for all tones (default: 0.2)
+  - Use seconds (e.g., 0.3)
+  - Use ♩ for quarter note (0.3s)
+  - Use ♪ for eighth note (0.15s)
+- --durations: Set individual durations for each character
+  - Can mix numbers, ♩, and ♪
+  - Example: --durations ♩ ♪ ♪ ♩ 0.5 ♩
 - --force: Force regeneration of existing files
 - --no-play: Generate the file without playing it
 
@@ -48,9 +53,9 @@ Examples
    python gen_dtmf.py 555-123-4567 --duration 0.3
    ```
 
-3. Use different durations for each digit:
+3. Use different durations with musical notation:
    ```
-   python gen_dtmf.py 123-456 --durations 0.1 0.2 0.3 0.1 0.2 0.3
+   python gen_dtmf.py 123-456 --durations ♩ ♪ ♪ ♩ 0.5 ♩
    ```
 
 4. Force regeneration of existing file:

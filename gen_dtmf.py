@@ -60,13 +60,25 @@ def play_audio(file_path):
     else:
         print("Audio playback not supported on this platform")
 
+def parse_duration(value):
+    """Convert duration value to seconds."""
+    if value == '♩':
+        return 0.3
+    elif value == '♪':
+        return 0.15
+    try:
+        return float(value)
+    except ValueError:
+        raise argparse.ArgumentTypeError(
+            f"Invalid duration value: {value}. Use a number, ♩ (0.3s), or ♪ (0.15s)")
+
 def main():
     parser = argparse.ArgumentParser(description='Generate DTMF tones for a phone number')
     parser.add_argument('phone_number', help='Phone number to generate tones for')
-    parser.add_argument('--duration', type=float, default=0.2,
-                      help='Duration of each tone in seconds (default: 0.2)')
-    parser.add_argument('--durations', type=float, nargs='+',
-                      help='List of durations for each digit (overrides --duration)')
+    parser.add_argument('--duration', type=parse_duration, default=0.2,
+                      help='Duration of each tone in seconds (default: 0.2), or ♩ (0.3s) or ♪ (0.15s)')
+    parser.add_argument('--durations', type=parse_duration, nargs='+',
+                      help='List of durations for each digit. Can use numbers, ♩ (0.3s), or ♪ (0.15s)')
     parser.add_argument('--force', action='store_true',
                       help='Force regeneration even if file exists')
     parser.add_argument('--no-play', action='store_true',
