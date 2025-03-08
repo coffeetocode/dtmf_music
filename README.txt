@@ -1,7 +1,11 @@
 DTMF Tone Generator
 =================
 
-A Python script that generates DTMF (Dual-Tone Multi-Frequency) tones for phone numbers and saves them as WAV files. The generator creates standard telephone keypad tones with configurable durations.
+A Python script that generates DTMF (Dual-Tone Multi-Frequency) tones for phone numbers and saves them as WAV files. The generator creates standard telephone keypad tones with configurable durations. Support for ♩ and ♪.
+
+Why? 
+* For funzies. Also because I want to help kids memorize phone numbers, it's easier if it's set to music, and it amuses me to have the music actually be the DTMF tones. 
+* An exuse to play with Claude Sonnet / CLINE w/ Memory Bank
 
 Requirements
 -----------
@@ -61,6 +65,11 @@ Examples
 4. Force regeneration of existing file:
    ```
    python gen_dtmf.py 555-123-4567 --force
+   ```
+
+5. Shave and a haircut... two bits :-D
+   ```
+   python gen_dtmf.py "51234 59" --durations ♩ ♪ ♪ ♩ ♩ 0.5 ♩ ♩
    ```
 
 Output
