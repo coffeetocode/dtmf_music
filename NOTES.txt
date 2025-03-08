@@ -1,0 +1,6 @@
+
+for copilot / CLINE support, start with: 
+$ mesh_start_copilot
+
+or
+$ newt --app-type mesh start -e prod -s /Users/patrickt/tools/strip-auth.yaml
